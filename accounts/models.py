@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name
         )
-        user.set_password(password)
+        user.set_password(password)  # encodes, using SHA
 
         # self._db refers to default db to store the user
         user.save(using=self._db)
@@ -88,3 +88,26 @@ class User(AbstractBaseUser):  # will contain fields
 
     def has_module_perms(self, app_label):
         return True
+
+
+class UserProfile(models.Model):
+    # one user profile belongs to one user
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, blank=True, null=True)
+    profile_picture = models.ImageField(
+        upload_to='users/profile_pictures', blank=True, null=True)
+    cover_photo = models.ImageField(
+        upload_to='users/cover_pictures', blank=True, null=True)
+    address_line_1 = models.CharField(max_length=200, blank=True, null=True)
+    address_line_2 = models.CharField(max_length=200, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    postal_code = models.CharField(max_length=10, blank=True, null=True)
+    latitude = models.CharField(max_length=30, blank=True, null=True)
+    longitude = models.CharField(max_length=30, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.email
