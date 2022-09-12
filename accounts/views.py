@@ -2,9 +2,10 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from .forms import UserForm
 from .models import User
-
+from django.contrib import messages
 
 # Create your views here.
+
 
 def registerUser(request):
     if request.method == 'POST':
@@ -19,6 +20,8 @@ def registerUser(request):
             user.set_password(password)  # hash the password
             user.role = User.CUSTOMER
             user.save()
+            messages.success(
+                request, 'You have been successfully registered!')
 
             # alternative way to create a user - using create_user method:
             # first_name = form.cleaned_data['first_name']
